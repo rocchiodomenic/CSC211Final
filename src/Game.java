@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 
 /**
  * Author: Domenic Rocchio
- * 
+ * to show you a change was made for github
  */
 public class Game extends Frame implements MouseListener {
 
