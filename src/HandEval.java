@@ -68,7 +68,7 @@ public class HandEval {
 
         // Loop through sorted cards and total ranks
         for(int i=0; i<availableCards.length;i++){
-            rankCounter[ availableCards[i].getRank() ]++;
+            rankCounter[ availableCards[i].getValue() ]++;
             suitCounter[ availableCards[i].getSuit() ]++;
         }
 
@@ -152,15 +152,15 @@ public class HandEval {
                 for (int i=0;i<3;i++){
                     // Check if first card is the ace.
                     // Ace must be in position 0, 1 or 2
-                    if (availableCards[i].getRank() == 0){
+                    if (availableCards[i].getValue() == 0){
                         // because the ace could be the first card in the array
                         // but the remaining 4 cards could start at position 1,
                         // 2 or 3 loop through checking each possibility.
                         for (int j=1;j<4-i;j++){
-                            if ((availableCards[i+j].getRank() == 9 && 
-                                    availableCards[i+j+1].getRank() == 10 &&
-                                    availableCards[i+j+2].getRank() == 11 &&
-                                    availableCards[i+j+3].getRank() == 12) 
+                            if ((availableCards[i+j].getValue() == 9 && 
+                                    availableCards[i+j+1].getValue() == 10 &&
+                                    availableCards[i+j+2].getValue() == 11 &&
+                                    availableCards[i+j+3].getValue() == 12) 
                                     &&
                                     (availableCards[i].getSuit() == availableCards[i+j].getSuit() &&
                                     availableCards[i].getSuit() == availableCards[i+j+1].getSuit() &&
@@ -188,17 +188,17 @@ public class HandEval {
             // Loop through available cards looking for 5 consecutive cards of the same suit,
             // start in reverse to get the highest value straight flush
             for (int i=availableCards.length-1;i>3;i--){
-                if ((availableCards[i].getRank()-ONE == availableCards[i-ONE].getRank() && 
-                        availableCards[i].getRank()-TWO == availableCards[i-TWO].getRank() &&
-                        availableCards[i].getRank()-THREE == availableCards[i-THREE].getRank() &&
-                        availableCards[i].getRank()-FOUR == availableCards[i-FOUR].getRank()) 
+                if ((availableCards[i].getValue()-ONE == availableCards[i-ONE].getValue() && 
+                        availableCards[i].getValue()-TWO == availableCards[i-TWO].getValue() &&
+                        availableCards[i].getValue()-THREE == availableCards[i-THREE].getValue() &&
+                        availableCards[i].getValue()-FOUR == availableCards[i-FOUR].getValue()) 
                         &&
                         (availableCards[i].getSuit() == availableCards[i-ONE].getSuit() &&
                         availableCards[i].getSuit() == availableCards[i-TWO].getSuit() &&
                         availableCards[i].getSuit() == availableCards[i-THREE].getSuit() &&
                         availableCards[i].getSuit() == availableCards[i-FOUR].getSuit())){
                             // Found royal flush, break and return.
-                            result = "Straight Flush!! " + Card.rankAsString(availableCards[i].getRank()) + " high of " + Card.suitAsString(availableCards[i].getSuit());
+                            result = "Straight Flush!! " + Card.rankAsString(availableCards[i].getValue()) + " high of " + Card.suitAsString(availableCards[i].getSuit());
                             break;
                 }
             }
@@ -262,7 +262,7 @@ public class HandEval {
                         availableCards[i].getSuit() == availableCards[i-THREE].getSuit() &&
                         availableCards[i].getSuit() == availableCards[i-FOUR].getSuit()){
                             // Found royal flush, break and return.
-                            result = "Flush!! " + Card.rankAsString(availableCards[i].getRank()) + " high of " + Card.suitAsString(availableCards[i].getSuit());
+                            result = "Flush!! " + Card.rankAsString(availableCards[i].getValue()) + " high of " + Card.suitAsString(availableCards[i].getSuit());
                             break;
                 }
             }           

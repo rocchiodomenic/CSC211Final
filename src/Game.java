@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -5,9 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JLabel;
+
 /**
  * Author: Domenic Rocchio
- * to show you a change was made for github
+ * 
  */
 public class Game extends Frame implements MouseListener {
 
@@ -18,13 +21,15 @@ public class Game extends Frame implements MouseListener {
 	 * I then will have a display of river and a flop which consists of 5 cards
 	 * total.
 	 */
-	private Card handOne1, handOne2, handTwo1, handTwo2, burnCard1, burnCard2,
-			burnCard3, burnCard4, burnCard5;
-	
+	private Card player1Card1, player1Card2, player2Card1, player2Card2, flop1, flop2, flop3, turn, river;
+	/**
+	 * deck to be used for the game
+	 */
 	private Deck deck = new Deck();
 
-	private Abutton playButton, resetButton, quitButton;
+	private Abutton playButton, resetButton, quitButton, foldButton, checkButton, raiseButton, callButton;
 
+	private JLabel player1Label, player2Label;
 	/**
 	 * So the System doesn't try to paint the buttons before they are
 	 * initialized
@@ -42,17 +47,19 @@ public class Game extends Frame implements MouseListener {
 	 */
 	private Color lowColor, highColor;
 
-	/**
-	 * a test to see whether the button is up or down.
-	 */
+	
 	private boolean up;
+	private boolean flopOccured = false;
+	private boolean turnOccured = false;
+	private boolean riverOccured = false;
+	private boolean gameStarted = false;
 
 	public Game() {
 
 		setTitle("Texas Holdem"); // The title of the program frame
-		setSize(550, 500); // Size of the program frame
+		setSize(600, 600); // Size of the program frame
 		setLocation(300, 300); // Location where the frame will appear
-		setBackground(Color.GREEN);// Set the background color to be green
+		setBackground(Color.white);// Set the background color to be white
 
 		Window myWindow = new Window();// to allow for window closing
 		addWindowListener(myWindow);// A must for AWT to close the window
@@ -60,8 +67,6 @@ public class Game extends Frame implements MouseListener {
 		setVisible(true);
 
 		addMouseListener(this);// so you can handle the mouse clicks
-
-		deck.printDeck();
 		
 		
 		
@@ -69,15 +74,13 @@ public class Game extends Frame implements MouseListener {
 		playButton = new Abutton("Play", Color.green, 125, 400, 100, 50);
 		resetButton = new Abutton("Reset", Color.yellow, 250, 400, 100, 50);
 		quitButton = new Abutton("Quit", Color.red, 375, 400, 100, 50);
-		System.out.println("buttons");
 		
-		handOne1 = new Card(100,75,false);
-		System.out.println("card information");
+		//creates the deck to be used in the game
+		//pulls cards from the 
+		deck = new Deck();
 		
-		handOne1.setSuit();
-		System.out.println("card suit: " + handOne1.getSuit());
-		handOne1.setValue();
-		System.out.println("card value: " + handOne1.getValue());
+		//there is an initial shuffle in the deck constructor but this is just another shuffle
+		deck.shuffle();
 		
 		// Showing that the program is ready to execute
 		complete = true;
@@ -103,23 +106,83 @@ public class Game extends Frame implements MouseListener {
 		// The cards that are being compared in
 		// the game of war.
 		if (playButton.isInside(xValue, yValue)) {
-			//handOne1 = new Card(100, 75, false);
-			// handOne2 = new Card(176, 75, false);
-			// handTwo1 = new Card(300, 75, false);
-			// handTwo2 = new Card(376, 75, false);
+			gameStarted = true;
+			/**player1Label = new JLabel();
+			player1Label.setText("Player 1's Hand");
+			player1Label.setHorizontalAlignment(75);
+			player1Label.setVerticalAlignment(25);*/
+			player1Card1 = deck.drawCard();
+			player1Card1.setLocation(100, 100);
+			player1Card2 = deck.drawCard();
+			player1Card2.setLocation(200, 100);
+			player2Card1 = deck.drawCard();
+			player2Card1.setLocation(325, 100);
+			player2Card2 = deck.drawCard();
+			player2Card2.setLocation(425, 100);
+			raiseButton = new Abutton("Raise", Color.blue, 75, 475, 100, 50);
+			foldButton = new Abutton("Fold", Color.red, 200, 475, 100, 50);
+			checkButton = new Abutton("Check", Color.white, 325, 475, 100, 50);
+			callButton = new Abutton("Call", Color.pink, 450, 475, 100, 50);
 		}
 
 		else if (resetButton.isInside(xValue, yValue)) {
-
 			// Makes it so that my cards disappear
 			// When the reset button is pressed.
-			handOne1 = new Card(true);
-			handOne2 = new Card(true);
-			handTwo1 = new Card(true);
-			handTwo2 = new Card(true);
-
+			gameStarted = false;
+			repaint();
 		}
-
+		else if (raiseButton.isInside(xValue, yValue)) {
+			//TODO
+			flopOccured = true;
+			flop1 = deck.drawCard();
+			flop1.setLocation(75, 250);
+			flop2 = deck.drawCard();
+			flop2.setLocation(150, 250);
+			flop3 = deck.drawCard();
+			flop3.setLocation(225, 250);
+			System.out.println("You Raise!");
+			turnOccured = true;
+			turn = deck.drawCard();
+			turn.setLocation(300,250);
+			riverOccured = true;
+			river = deck.drawCard();
+			river.setLocation(350, 325);
+		}
+		else if (foldButton.isInside(xValue, yValue)) {
+			gameStarted = false;
+			
+			System.out.println("You lose!");
+			repaint();
+			//TODO
+		}
+		else if (checkButton.isInside(xValue, yValue)) {
+			// Makes it so that my cards disappear
+			// When the reset button is pressed.
+			//TODO
+			flopOccured = true;
+			flop1 = deck.drawCard();
+			flop1.setLocation(75, 250);
+			flop2 = deck.drawCard();
+			flop2.setLocation(150, 250);
+			flop3 = deck.drawCard();
+			flop3.setLocation(225, 250);
+			System.out.println("You Check!");
+			repaint();
+		}
+		else if (callButton.isInside(xValue, yValue)) {
+			// Makes it so that my cards disappear
+			// When the reset button is pressed.
+			//TODO
+			flopOccured = true;
+			flop1 = deck.drawCard();
+			flop1.setLocation(75, 250);
+			flop2 = deck.drawCard();
+			flop2.setLocation(150, 250);
+			flop3 = deck.drawCard();
+			flop3.setLocation(225, 250);
+			System.out.println("You Call!");
+			repaint();
+		}
 		repaint();
 	}
 
@@ -140,6 +203,7 @@ public class Game extends Frame implements MouseListener {
 		// using flip()
 		if (playButton.isInside(xValue, yValue)) {
 			playButton.flip();
+			gameStarted = true;
 			repaint();// updates the frame
 		}
 
@@ -235,20 +299,39 @@ public class Game extends Frame implements MouseListener {
 	 */
 	public void paint(Graphics pane) {
 		if (complete) {
-
 			Graphics2D pane2 = (Graphics2D) pane;
 
 			// This is where the color will change showing
 			// when a button is pressed
 			pane2.setColor(up ? highColor : lowColor);
-
-			handOne1.paint(pane);
-			//handOne2.paint(pane);
-			//handTwo1.paint(pane);
-			//handTwo2.paint(pane);
+			
 			playButton.paint(pane);
 			resetButton.paint(pane);
 			quitButton.paint(pane);
+			
+			if(gameStarted){
+				player1Card1.paint(pane);
+				player1Card2.paint(pane);
+				player2Card1.paint(pane);
+				player2Card2.paint(pane);
+				raiseButton.paint(pane);
+				checkButton.paint(pane);
+				foldButton.paint(pane);
+				callButton.paint(pane);
+				//player1Label.paint(pane);
+			}
+			
+			if(flopOccured){
+				flop1.paint(pane);
+				flop2.paint(pane);
+				flop3.paint(pane);
+			}
+			if(turnOccured){
+				turn.paint(pane);
+			}
+			if(riverOccured){
+				river.paint(pane);
+			}
 		}
 	}
 

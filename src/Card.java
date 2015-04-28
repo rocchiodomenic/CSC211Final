@@ -3,152 +3,128 @@
  */
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-
-public class Card {
+public class Card extends JPanel {
 	private int suit;
-
-	private int cardValue;
-	private String value;
-	private Image image;
+	private int value;
+	private BufferedImage image;
 	private int width = 75;
 	private int height = 125;
 	private int xValue;
 	private int yValue;
-	private boolean isUpsideDown;
-	private String imagePath = "";
+	private boolean isUpsideDown = false;
+	private String imagePath = "images/";
+	private String heartsPath = "Hearts.png";
+	private String spadesPath = "Spades.png";
+	private String clubsPath = "Clubs.png";
+	private String diamondsPath = "Diamonds.png";
 	private boolean isVisible = true;
+	public static final int ACE = 1;
+	public static final int JACK = 11;
+	public static final int QUEEN = 12;
+	public static final int KING = 13;
+	public static final int HEARTS = 1;
+	public static final int CLUBS = 2;
+	public static final int SPADES = 3;
+	public static final int DIAMONDS = 4;
 
-	public Card(int cardValue, int suit) {
-		this.cardValue = cardValue;
+	public Card(int value, int suit) {
+		this.value = value;
 		this.suit = suit;
-
 	}
 
 	public Card(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
 
-	public Card(int someX, int someY, boolean isUpsideDown) {
-		xValue = someX;
-		yValue = someY;
-
-		// If the card is face down or right side up
-		this.isUpsideDown = isUpsideDown;
-
-		// When its facing up, it will be the cards being compared
-		// And I call the accessor and mutator methods to get the info
-		// For the card
-		/**if (!isUpsideDown) {
-			System.out.println("got here");
-			setSuit();
-			System.out.println(suit);
-			setValue();
-			System.out.println(value);
-		}*/
+	public void setLocation(int xValue, int yValue){
+		this.xValue = xValue;
+		this.yValue = yValue;
 	}
 
-	public void setValue() {
-		// Int to go through the switch
-		cardValue = (int) (Math.random() * 13) + 1;
-
-		switch (cardValue) {
-		case 1:
-			value = "2";
-			break;
-		case 2:
-			value = "3";
-			break;
-		case 3:
-			value = "4";
-			break;
-		case 4:
-			value = "5";
-			break;
-		case 5:
-			value = "6";
-			break;
-		case 6:
-			value = "7";
-			break;
-		case 7:
-			value = "8";
-			break;
-		case 8:
-			value = "9";
-			break;
-		case 9:
-			value = "10";
-			break;
-		case 10:
-			value = "J";
-			break;
-		case 11:
-			value = "Q";
-			break;
-		case 12:
-			value = "K";
-			break;
-		case 13:
-			value = "A";
-			break;
-		default:
-			break;
-		}
+	
+	public void setIfUpsideDown(boolean isUpsideDown){
+		this.isUpsideDown = isUpsideDown;
+	}
+	
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	public int getValue() {
-		return cardValue;
+		return value;
 	}
 
 	public void paint(Graphics pane) {
 		if (isVisible == true) {
-			//Sets the color of the face down cards 
+			// Sets the color of the face down cards
 			pane.setColor(Color.darkGray);
-			
-			//Draws the outline for the cards that are visible
-			pane.drawRoundRect(xValue, yValue, width, height, 16, 16);
-			
-			//Draws the rank of the card on the face of the card on the 
-			//Top left of the card
-			pane.drawString(""+ value, xValue + 5 , yValue + 15);
 
-			image = new ImageIcon(imagePath).getImage();
-			pane.drawImage(image, xValue + width/3 - 17, yValue + height/3, null);
-			//fills the rectangle
-			if(isUpsideDown){
-				pane.fillRoundRect(xValue + 1, yValue + 1, width - 1, height - 1, 16, 16);
+			// Draws the outline for the cards that are visible
+			pane.drawRoundRect(xValue, yValue, width, height, 16, 16);
+
+			// Draws the rank of the card on the face of the card on the
+			// Top left of the card
+			String valueToString = "" + value;
+			switch (value) {
+			case ACE:
+				valueToString = "A";
+				break;
+			case KING:
+				valueToString = "K";
+				break;
+			case QUEEN:
+				valueToString = "Q";
+				break;
+			case JACK:
+				valueToString = "J";
+				break;
 			}
-			else{
-				//This is where I am importing the image file which
-				// is a .png  I call getImage to get the image and 
-				//I draw it on the face up cards
-				
+			pane.drawString("" + valueToString, xValue + 5, yValue + 15);
+
+			try {
+				String imageFile = "";
+				switch (suit) {
+				case HEARTS:
+					imageFile = heartsPath;
+					break;
+				case CLUBS:
+					imageFile = clubsPath;
+					break;
+				case DIAMONDS:
+					imageFile = diamondsPath;
+					break;
+				case SPADES:
+					imageFile = spadesPath;
+					break;
+				}
+				//In order for this to work, put images in source folder called images
+				image = ImageIO.read(new File(imagePath + imageFile));
+				JLabel picLabel = new JLabel(new ImageIcon(image));
+				add(picLabel);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			pane.drawImage(image, xValue + (width / 3) - 22, yValue + (height / 3) - 15, null);
+
+			if (isUpsideDown) {
+				pane.fillRoundRect(xValue + 1, yValue + 1, width - 1,
+						height - 1, 16, 16);
 			}
 		}
 	}
 
-	public void setSuit() {
-		// Random number between 1 and 4 for the switch
-		suit = ((int) (Math.random() * 4) + 1);
-
-		switch (suit) {
-		case 1:
-			imagePath = "Hearts.png";
-			break;
-		case 2:
-			imagePath = "Spades.png";
-			break;
-		case 3:
-			imagePath = "Clubs.png";
-			break;
-		case 4:
-			imagePath = "Diamonds.png";
-			break;
-		}
+	public void setSuit(int suit) {
+		this.suit = suit;
 	}
 
 	public int getSuit() {
