@@ -13,12 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Card extends JPanel {
-	private int suit;
-	private int value;
+	protected int suit;
+	protected int value;
 	private BufferedImage image;
 	private int width = 75;
 	private int height = 125;
-	private int xValue;
+	protected int xValue;
 	private int yValue;
 	private boolean isUpsideDown = false;
 	private String imagePath = "images/";
@@ -26,7 +26,7 @@ public class Card extends JPanel {
 	private String spadesPath = "Spades.png";
 	private String clubsPath = "Clubs.png";
 	private String diamondsPath = "Diamonds.png";
-	private boolean isVisible = true;
+	protected boolean isVisible = true;
 	public static final int ACE = 1;
 	public static final int JACK = 11;
 	public static final int QUEEN = 12;
